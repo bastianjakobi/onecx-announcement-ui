@@ -2,12 +2,15 @@ const { ModifyEntryPlugin } = require('@angular-architects/module-federation/src
 const { share, withModuleFederationPlugin } = require('@angular-architects/module-federation/webpack')
 
 const config = withModuleFederationPlugin({
-  name: 'onecx-announcement-ui',
+  name: 'onecxAnnouncementUi',
   filename: 'remoteEntry.js',
   exposes: {
-    './OneCXAnnouncementModule': 'src/app/onecx-announcement-remote.module.ts',
-    './OneCXAnnouncementBannerComponent': 'src/app/remotes/announcement-banner/announcement-banner.component.ts'
+    // './OneCXAnnouncementModule': 'src/app/onecx-announcement-remote.module.ts',
+    // './OneCXAnnouncementBannerComponent': 'src/app/remotes/announcement-banner/announcement-banner.component.ts',
+    './ocxAnnouncementApp': 'src/app/entrypoint.bootstrap.ts',
+    './ocxAnnouncementBanner': 'src/app/remotes/announcement-banner/announcement-banner.bootstrap.ts'
   },
+  library: { type: 'window', name: 'onecxAnnouncementUi' },
   shared: share({
     '@angular/core': { singleton: true, requiredVersion: 'auto' },
     '@angular/forms': {
@@ -34,7 +37,11 @@ const config = withModuleFederationPlugin({
     '@onecx/accelerator': { requiredVersion: 'auto', includeSecondaries: true },
     '@onecx/integration-interface': { requiredVersion: 'auto', includeSecondaries: true },
     '@onecx/keycloak-auth': { requiredVersion: 'auto', includeSecondaries: true },
-    '@onecx/portal-integration-angular': { requiredVersion: 'auto', includeSecondaries: true }
+    '@onecx/portal-integration-angular': { requiredVersion: 'auto', includeSecondaries: true },
+    '@angular-architects/module-federation-tools': {
+      requiredVersion: 'auto',
+      includeSecondaries: true
+    }
   }),
   sharedMappings: ['@onecx/portal-integration-angular']
 })
@@ -46,5 +53,10 @@ const plugins = config.plugins.filter((plugin) => !(plugin instanceof ModifyEntr
 
 module.exports = {
   ...config,
-  plugins
+  plugins,
+  output: {
+    uniqueName: 'onecxAnnouncementUi',
+    publicPath: 'auto',
+    scriptType: 'text/javascript'
+  }
 }
